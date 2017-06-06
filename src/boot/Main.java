@@ -2,23 +2,24 @@ package boot;
 
 import java.util.ArrayList;
 
-import algorithm.ComplexPredicate;
+import algorithm.Plannable;
 import algorithm.Predicate;
 import algorithm.SimplePredicate;
 import forSokoban.AndPredicate;
+import forSokoban.PredicateGenerator;
 
 public class Main {
 
 	public static void main(String[] args) {
-		SimplePredicate<Integer> p1=new SimplePredicate<Integer>("BoxAt",1);
+	/*	SimplePredicate<Integer> p1=new SimplePredicate<Integer>("BoxAt",1);
 		SimplePredicate<Integer> p2=new SimplePredicate<Integer>("BoxAt",2);
-		
-		ArrayList<Predicate<Integer>> preds=new ArrayList<>();
-		preds.add(p1);
-		preds.add(p2);
-		ComplexPredicate<Integer> c1=new AndPredicate<Integer>("AllBoxesAtPositions", preds);
-		System.out.println(c1);
-
+		SimplePredicate<Integer> pa1=new SimplePredicate<Integer>("Box(in list)",54);
+		SimplePredicate<Integer> pa2=new SimplePredicate<Integer>("Box(in list)",32);
+		ArrayList<Predicate<Integer>> pa=new ArrayList<>();
+		pa.add(pa1);
+		AndPredicate<Integer> pArray=new AndPredicate<Integer>("Complex",pa);*/
+		Plannable<String> plannable=PredicateGenerator.readFile("LevelTest");
+		System.out.println(plannable.getGoal());
 	}
 
 }

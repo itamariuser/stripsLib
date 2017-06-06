@@ -4,13 +4,16 @@ import algorithm.Predicate;
 
 public class NotPredicate<T> extends Predicate<T> {
 
-	Predicate<T> other;
+	Predicate<T> inner;
 
-	public NotPredicate(String name, Predicate<T> other) {
+	public NotPredicate(String name, Predicate<T> inner) {
 		super(name);
-		this.other = other;
+		this.inner = inner;
 	}
 	
-	
+	@Override
+	public boolean satisfies(Predicate<T> other) {
+		return !(inner.satisfies(other));
+	}
 
 }

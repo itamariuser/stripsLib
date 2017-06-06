@@ -6,4 +6,8 @@ public class SimplePredicate<T> extends Predicate<T> {
 		super(name,data);
 	}
 
+	public SimplePredicate(String name) {
+		super(name);
+	}
+
 }
