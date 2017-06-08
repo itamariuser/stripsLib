@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AndPredicate<T> extends ComplexPredicate<T> {
-	
-	public AndPredicate(Predicate<T> pred) {
-		super("Default AndPredicate",new ArrayList<Predicate<T>>());
-		this.add(pred);
-	}
 	public AndPredicate(String name, List<Predicate<T>> components) {
 		super(name, components);
 	}
-
+	@SafeVarargs
+	public AndPredicate(Predicate<T>... preds) {
+		super("Default AndPredicate",new ArrayList<Predicate<T>>());
+		for (Predicate<T> predicate : preds) {
+			this.add(predicate);
+		}
+	}
 	
 	private void splitAndPreds(AndPredicate<T> pred)
 	{

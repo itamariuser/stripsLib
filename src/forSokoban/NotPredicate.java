@@ -6,8 +6,8 @@ public class NotPredicate<T> extends Predicate<T> {
 
 	Predicate<T> inner;
 
-	public NotPredicate(String name, Predicate<T> inner) {
-		super(name);
+	public NotPredicate(Predicate<T> inner) {
+		super("No "+inner.getName());
 		this.inner = inner;
 	}
 	
