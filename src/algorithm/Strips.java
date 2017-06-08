@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import forSokoban.AndPredicate;
-
 public class Strips<T> implements Planner<T> {
 	@Override
 	public Plan<T> plan(Plannable<T> plannable) {

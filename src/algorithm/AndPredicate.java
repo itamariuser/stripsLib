@@ -1,9 +1,6 @@
-package forSokoban;
+package algorithm;
 
 import java.util.Collection;
-
-import algorithm.ComplexPredicate;
-import algorithm.Predicate;
 
 public class AndPredicate<T> extends ComplexPredicate<T> {
 	

@@ -1,7 +1,5 @@
 package algorithm;
 
-import forSokoban.AndPredicate;
-
 public class Action<T> extends Predicate<T> {
 	
 

@@ -3,8 +3,6 @@ package algorithm;
 import java.util.Collection;
 import java.util.HashSet;
 
-import forSokoban.AndPredicate;
-
 public class ComplexPredicate<T> extends Predicate<T> {
 	protected Collection<Predicate<T>> components;
 
