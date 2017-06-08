@@ -1,12 +1,9 @@
 package forSokoban;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import algorithm.ComplexPredicate;
 import algorithm.Predicate;
-import algorithm.SimplePredicate;
 
 public class AndPredicate<T> extends ComplexPredicate<T> {
 	
@@ -34,6 +31,12 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 			}
 		}
 		return false;
+	}
+	
+	public void update(AndPredicate<T> effects) {//TODO: complete from 0000002 video eli
+		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->p.contradicts(pr)));
+		components.addAll(effects.getComponents());
+		
 	}
 
 	

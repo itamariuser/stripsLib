@@ -17,7 +17,7 @@ public class PredicateGenerator  {// Convert level
 																// TODO: make
 																// object
 																// adapter from
-																// sokoban level
+																// sokoban policy
 																// to Plannable
 
 	static public ComplexPredicate<String> getGoal(ComplexPredicate<String> kb)

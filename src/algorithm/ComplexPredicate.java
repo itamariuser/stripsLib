@@ -3,6 +3,8 @@ package algorithm;
 import java.util.Collection;
 import java.util.HashSet;
 
+import forSokoban.AndPredicate;
+
 public class ComplexPredicate<T> extends Predicate<T> {
 	protected Collection<Predicate<T>> components;
 
@@ -28,9 +30,10 @@ public class ComplexPredicate<T> extends Predicate<T> {
 		return "** COMPLEX PREDICATE, Name: " + this.name + ", preds:" + sb.toString();
 	}
 
-	public void update(ComplexPredicate<T> effects) {//TODO: complete from 0000002 video eli
-		//effects.getComponents().forEach((Predicate<T> p)->components.removeIf(p.contradicts(other)));
-
+	public void update(AndPredicate<T> effects) {
+		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->p.contradicts(pr)));
+		components.addAll(effects.getComponents());
+		
 	}
 	
 	public void add(Predicate<T> p)
@@ -40,6 +43,6 @@ public class ComplexPredicate<T> extends Predicate<T> {
 			components=new HashSet<Predicate<T>>();
 		}
 		this.components.add(p);
-		//this.updateDescription();//TODO: complete from eli 0000002
+		
 	}
 }

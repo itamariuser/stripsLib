@@ -1,30 +1,38 @@
 package algorithm;
 
+import forSokoban.AndPredicate;
+
 public class Action<T> extends Predicate<T> {
-	public Action(String name) {
-		super(name);
-	}
-
-	protected ComplexPredicate<T> preconditions;
 	
-	protected ComplexPredicate<T> effects;
 
-	public ComplexPredicate<T> getPreconditions() {
+	protected AndPredicate<T> preconditions;
+	
+	protected AndPredicate<T> effects;
+
+	
+	public AndPredicate<T> getPreconditions() {
 		return preconditions;
 	}
 
-	public void setPreconditions(ComplexPredicate<T> preconditions) {
+
+	public void setPreconditions(AndPredicate<T> preconditions) {
 		this.preconditions = preconditions;
 	}
 
-	public ComplexPredicate<T> getEffects() {
+
+	public AndPredicate<T> getEffects() {
 		return effects;
 	}
 
-	public void setEffects(ComplexPredicate<T> effects) {
+
+	public void setEffects(AndPredicate<T> effects) {
 		this.effects = effects;
 	}
 
+
+	public Action(String name) {
+		super(name);
+	}
 	
 	
 }

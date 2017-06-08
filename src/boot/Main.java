@@ -1,11 +1,6 @@
 package boot;
 
-import java.util.ArrayList;
-
 import algorithm.Plannable;
-import algorithm.Predicate;
-import algorithm.SimplePredicate;
-import forSokoban.AndPredicate;
 import forSokoban.PredicateGenerator;
 
 public class Main {

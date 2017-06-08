@@ -7,11 +7,9 @@ import java.util.Stack;
 import forSokoban.AndPredicate;
 
 public class Strips<T> implements Planner<T> {
-	Plannable<T> plannable;
 	@Override
-	public List<Action<T>> plan(Plannable<T> plannable) {
+	public Plan<T> plan(Plannable<T> plannable) {
 		LinkedList<Action<T>> actionsToDo=new LinkedList<Action<T>>();
-		this.plannable=plannable;
 		Stack<Predicate<T>> stack = new Stack<>();
 		stack.push(plannable.getGoal());
 		while(!stack.isEmpty())
@@ -33,8 +31,8 @@ public class Strips<T> implements Planner<T> {
 					{
 						stack.pop();
 						Action<T> action=plannable.getSatisfyingAction(top);//Change to a set of actions
-						stack.push(action.getPreconditions());
 						stack.push(action);
+						stack.push(action.getPreconditions());
 					}
 				}
 				else//satisfied
@@ -50,7 +48,7 @@ public class Strips<T> implements Planner<T> {
 				actionsToDo.add(a);
 			}
 		}
-		return actionsToDo;
+		return new Plan<T>(actionsToDo);
 	}
 
 
