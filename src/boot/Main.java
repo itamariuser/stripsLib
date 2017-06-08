@@ -1,6 +1,7 @@
 package boot;
 
 import algorithm.Plannable;
+import algorithm.Strips;
 import forSokoban.PredicateGenerator;
 
 public class Main {
@@ -15,6 +16,8 @@ public class Main {
 		AndPredicate<Integer> pArray=new AndPredicate<Integer>("Complex",pa);*/
 		Plannable<String> plannable=PredicateGenerator.readFile("LevelTest");
 		System.out.println(plannable.getGoal());
+		Strips<String> strips=new Strips<>();
+		strips.plan(plannable);
 	}
 
 }

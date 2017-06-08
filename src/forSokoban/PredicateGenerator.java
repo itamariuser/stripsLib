@@ -3,10 +3,11 @@ package forSokoban;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import algorithm.Action;
-import algorithm.ComplexPredicate;
+import algorithm.AndPredicate;
 import algorithm.Plannable;
 import algorithm.Predicate;
 import algorithm.SimplePredicate;
@@ -20,17 +21,26 @@ public class PredicateGenerator  {// Convert level
 																// sokoban policy
 																// to Plannable
 
-	static public ComplexPredicate<String> getGoal(ComplexPredicate<String> kb)
+	static public Predicate<String> getGoal(AndPredicate<String> kb)
 	{
-		ComplexPredicate<String> goal=new ComplexPredicate<>("Goal predicates",null );
-		
+		AndPredicate<String> goal=new AndPredicate<>("Goal predicates",new ArrayList<Predicate<String>>() );
+		int goalCount=0;
+		int index=-1;
+		int goalIndex=0;
 		for (Predicate<String> p: kb.getComponents()) {
+			index++;
 			if(p.getName().startsWith("Goal "))//find goals
 			{
+				goalCount++;
+				goalIndex=index;
 				goal.add(new SimplePredicate<String>("Crate #?",p.getData()));
 			}
 		}
-		
+		if(goalCount<=1)
+		{
+			SimplePredicate<String> temp=new SimplePredicate<String>("Crate #?",kb.getComponents().get(goalIndex).getData());//p.getData()
+			return temp;
+		}
 		return goal;
 	}
 	
@@ -44,8 +54,8 @@ public class PredicateGenerator  {// Convert level
 				level.add(line.toCharArray());
 			}
 			br.close();
-			ComplexPredicate<String> kb=getKB(level);
-			ComplexPredicate<String> goal=getGoal(kb);
+			AndPredicate<String> kb=getKB(level);
+			Predicate<String> goal=getGoal(kb);
 			Plannable<String> plannable=new Plannable<String>() {
 				
 				@Override
@@ -55,18 +65,43 @@ public class PredicateGenerator  {// Convert level
 				}
 				
 				@Override
-				public Action<String> getSatisfyingAction(Predicate<String> top) {
-					// TODO: from all possible actions, return the action with most satisfied preconditions
+				public Action<String> getSatisfyingAction(Predicate<String> top) {//data: (x ,y)
+					//new action(name,data)=>new action(top.getname(), );
+					if(top.getName().startsWith("Crate #"))
+					{
+						//generate a list of legal directions to move crate
+						//(you have to check if there's a box or a wall in the direction [like policy checks])
+						//pick an action that has preconditions who fit the most to the knowledge base
+					}
+					
 					return null;
 				}
 				
 				@Override
-				public ComplexPredicate<String> getKnowledgebase() {
+				public AndPredicate<String> getKnowledgebase() {
 					return kb;
 				}
 				
 				@Override
-				public ComplexPredicate<String> getGoal() {
+				public Predicate<String> getGoal() {
+					AndPredicate<String> goal=new AndPredicate<>("Goal predicates",new ArrayList<Predicate<String>>() );
+					int goalCount=0;
+					int index=-1;
+					int goalIndex=0;
+					for (Predicate<String> p: kb.getComponents()) {
+						index++;
+						if(p.getName().startsWith("Goal "))//find goals
+						{
+							goalCount++;
+							goalIndex=index;
+							goal.add(new SimplePredicate<String>("Crate #?",p.getData()));
+						}
+					}
+					if(goalCount<=1)
+					{
+						SimplePredicate<String> temp=new SimplePredicate<String>("Crate #?",kb.getComponents().get(goalIndex).getData());//p.getData()
+						return temp;
+					}
 					return goal;
 				}
 
@@ -85,19 +120,19 @@ public class PredicateGenerator  {// Convert level
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		return null;
 	}
 
-	public static ComplexPredicate<String> getGoal() {
+	public static AndPredicate<String> getGoal() {
 
 		return null;
 	}
 
 	
-	static public ComplexPredicate<String> getKB(ArrayList<char[]> level) {
+	static public AndPredicate<String> getKB(ArrayList<char[]> level) {
 		
-		ComplexPredicate<String> kb = new ComplexPredicate<>("Knowledge base", null);
+		AndPredicate<String> kb = new AndPredicate<>("Knowledge base", null);
 		int crateCount = 0;
 		int goalCount = 0;
 		for (int i = 0; i < level.size(); i++) {

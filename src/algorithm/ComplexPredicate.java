@@ -1,21 +1,21 @@
 package algorithm;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComplexPredicate<T> extends Predicate<T> {
-	protected Collection<Predicate<T>> components;
+	protected List<Predicate<T>> components;
 
-	public ComplexPredicate(String name, Collection<Predicate<T>> components) {
+	public ComplexPredicate(String name, List<Predicate<T>> components) {
 		super(name);
 		this.components = components;
 	}
 
-	public Collection<Predicate<T>> getComponents() {
+	public List<Predicate<T>> getComponents() {
 		return components;
 	}
 
-	public void setComponents(Collection<Predicate<T>> components) {
+	public void setComponents(List<Predicate<T>> components) {
 		this.components = components;
 	}
 
@@ -38,7 +38,7 @@ public class ComplexPredicate<T> extends Predicate<T> {
 	{
 		if(this.components==null)
 		{
-			components=new HashSet<Predicate<T>>();
+			components=new ArrayList<Predicate<T>>();
 		}
 		this.components.add(p);
 		

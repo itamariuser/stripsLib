@@ -1,11 +1,11 @@
 package algorithm;
 
-import java.util.Collection;
+import java.util.List;
 
 public class AndPredicate<T> extends ComplexPredicate<T> {
 	
 	
-	public AndPredicate(String name, Collection<Predicate<T>> components) {
+	public AndPredicate(String name, List<Predicate<T>> components) {
 		super(name, components);
 	}
 
