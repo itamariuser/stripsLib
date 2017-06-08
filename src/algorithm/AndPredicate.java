@@ -1,14 +1,33 @@
 package algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AndPredicate<T> extends ComplexPredicate<T> {
 	
-	
+	public AndPredicate(Predicate<T> pred) {
+		super("Default AndPredicate",new ArrayList<Predicate<T>>());
+		this.add(pred);
+	}
 	public AndPredicate(String name, List<Predicate<T>> components) {
 		super(name, components);
 	}
 
+	
+	private void splitAndPreds(AndPredicate<T> pred)
+	{
+		for (Predicate<T> predicate : pred.getComponents()) {
+			if(predicate instanceof AndPredicate)
+			{
+				splitAndPreds((AndPredicate<T>)predicate);
+			}
+			else //=>(predicate instanceof SimplePredicate)
+			{
+				components.add(predicate);
+			}
+		}
+		components.remove(pred);
+	}
 	@Override
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
@@ -30,10 +49,10 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 		return false;
 	}
 	
-	public void update(AndPredicate<T> effects) {//TODO: complete from 0000002 video eli
+	public void update(AndPredicate<T> effects) {
 		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->p.contradicts(pr)));
 		components.addAll(effects.getComponents());
-		
+		splitAndPreds(effects);
 	}
 
 	
