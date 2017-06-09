@@ -25,7 +25,7 @@ public class PredicateGenerator  {// Convert level
 	static public Plannable<Position> readFile(String fileName) {
 		try {
 			
-			ArrayList<char[]> level = new ArrayList<char[]>();//level.get(y)[x]
+			ArrayList<char[]> level = new ArrayList<char[]>();//level.get(x)[y]
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -38,7 +38,7 @@ public class PredicateGenerator  {// Convert level
 				@Override
 				public Action<Position> getSatisfyingAction(Predicate<Position> top) {//data: (x ,y)
 						List<Action<Position>> possibleActions=getSatisfyingActions(top);
-						System.out.println(possibleActions.get(0));
+						System.out.println(possibleActions.get(0));//it's ok, null pointer because we haven't programmed getSatisfyingActions for "Player1" in position
 						int fitCount=0;
 						int maxFit=-1;
 						Action<Position> mostFitAction=null;
@@ -95,7 +95,7 @@ public class PredicateGenerator  {// Convert level
 						ArrayList<Predicate<Position>> toRemove=new ArrayList<>();//items in this list will be removed afer each generation of action
 						Action<Position> act=new Action<Position>("Move_Crate_To_Position");
 						act.setEffects(new AndPredicate<>(new SimplePredicate<>("Crate #?",new Position(x,y)),new NotPredicate<Position>(new SimplePredicate<Position>("Non Solid", new Position(x,y)))));//set effects to be "Crate at position "(x,y)", "No non solid at position (x,y)" (which means crate is in pos)
-						char objInNextPos=level.get(y)[x];
+						char objInNextPos=level.get(x)[y];
 						if(!(objInNextPos==' ' || objInNextPos=='o'))//if there's a solid at position, then add targetSpaceIsFree predicate
 						{
 							toGenerate.add(new NotPredicate<>(new SimplePredicate<Position>("Crate",new Position(x,y))));//add a predicate: no crate in next point
