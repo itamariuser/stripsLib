@@ -15,5 +15,10 @@ public class SimplePredicate<T> extends Predicate<T> {
 	public boolean satisfies(Predicate<T> other) {
 		return this.equals(other);
 	}
-
+	
+	public SimplePredicate(SimplePredicate<T> other) {
+		super("DEFAULT");
+		this.name=other.name;
+		this.data=other.data;
+	}
 }

@@ -33,6 +33,12 @@ public class Action<T> extends Predicate<T> {
 	}
 	@Override
 	public String toString() {
-		return "Type: "+this.getClass().getSimpleName()+"\nName: "+this.name+"\nData: null";
+		return "Type: "+this.getClass().getSimpleName()+"\nName: "+this.name+"\n Preconditions: "+this.preconditions.toString()+"\n Effects: "+this.effects.toString();
+	}
+	public Action(String name,AndPredicate<T> preconditions,AndPredicate<T> effects) {
+		super("DEFAULT");
+		this.preconditions=preconditions;
+		this.effects=effects;
+		this.name=name;
 	}
 }

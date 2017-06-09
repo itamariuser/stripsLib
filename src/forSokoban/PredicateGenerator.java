@@ -106,13 +106,12 @@ public class PredicateGenerator  {// Convert level
 						
 						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
 						//{
-						CrateIsAtPosition.setData(new Position(x-1,y));
+						CrateIsAtPosition.setData(new Position(x-1,y));//TODO: add position checking
 						player1IsAtPosition.setData(new Position(x-2,y));
-						
-						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
-						
-						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
-						possibleActions.add(act);
+						//toGenerate.add
+						updateLists(toGenerate,toRemove,new SimplePredicate<>(CrateIsAtPosition),new SimplePredicate<>(player1IsAtPosition));
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to right
+						possibleActions.add(new Action<Position>(act.getName(),act.getPreconditions(),act.getEffects()));
 						//}
 						
 						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
@@ -120,10 +119,9 @@ public class PredicateGenerator  {// Convert level
 						CrateIsAtPosition.setData(new Position(x,y-1));
 						player1IsAtPosition.setData(new Position(x,y-2));
 						
-						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
-						
-						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
-						possibleActions.add(act);
+						updateLists(toGenerate,toRemove,new SimplePredicate<>(CrateIsAtPosition),new SimplePredicate<>(player1IsAtPosition));
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to down
+						possibleActions.add(new Action<Position>(act.getName(),act.getPreconditions(),act.getEffects()));
 						//}
 						
 						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)	
@@ -131,10 +129,9 @@ public class PredicateGenerator  {// Convert level
 						CrateIsAtPosition.setData(new Position(x+1,y));
 						player1IsAtPosition.setData(new Position(x+2,y));
 						
-						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
-						
-						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
-						possibleActions.add(act);
+						updateLists(toGenerate,toRemove,new SimplePredicate<>(CrateIsAtPosition),new SimplePredicate<>(player1IsAtPosition));
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to left
+						possibleActions.add(new Action<Position>(act.getName(),act.getPreconditions(),act.getEffects()));
 						//}
 						
 						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)		
@@ -142,12 +139,16 @@ public class PredicateGenerator  {// Convert level
 						CrateIsAtPosition.setData(new Position(x,y+1));
 						player1IsAtPosition.setData(new Position(x,y+2));
 						
-						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
-						
+						updateLists(toGenerate,toRemove,new SimplePredicate<>(CrateIsAtPosition),new SimplePredicate<>(player1IsAtPosition));
 						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
-						possibleActions.add(act);
+						possibleActions.add(new Action<Position>(act.getName(),act.getPreconditions(),act.getEffects()));
 						//}
+						StringBuilder actionsToString= new StringBuilder();
+						for (Action<Position> action : possibleActions) {
+							actionsToString.append(action.toString()+"\n");
+						}
 						
+						System.out.println("GENERATED FOR PREDICATE:\n"+top.toString()+"\nNEW ACTIONS: \n"+actionsToString.toString());
 						return possibleActions;
 					}
 					if(top.getName().startsWith("No Crate"))// if location needs to be free
@@ -177,8 +178,12 @@ public class PredicateGenerator  {// Convert level
 	@SafeVarargs
 	private static void updateLists(List<Predicate<Position>> toGenerate,List<Predicate<Position>> toRemove,Predicate<Position>...predicates )
 	{
-		toGenerate.removeAll(toRemove);
-		toRemove=new ArrayList<>();
+		ArrayList<Predicate<Position>> toRemoveFromToRemove=new ArrayList<>();
+		for (Predicate<Position> predicate : toRemove) {
+			toGenerate.remove(predicate);
+			toRemoveFromToRemove.add(predicate);
+		}
+		toRemove.removeAll(toRemoveFromToRemove);
 		for (Predicate<Position> predicate : predicates) {
 			toGenerate.add(predicate);
 			toRemove.add(predicate);
