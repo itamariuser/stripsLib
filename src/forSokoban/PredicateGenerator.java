@@ -22,7 +22,7 @@ public class PredicateGenerator  {// Convert level
 																// sokoban policy
 																// to Plannable
 	
-	static public Plannable<Position> readFile(String fileName) {//CHANGE TO Plannable<POSITION> (x,y)
+	static public Plannable<Position> readFile(String fileName) {
 		try {
 			
 			ArrayList<char[]> level = new ArrayList<char[]>();//level.get(y)[x]
@@ -37,19 +37,23 @@ public class PredicateGenerator  {// Convert level
 				
 				@Override
 				public Action<Position> getSatisfyingAction(Predicate<Position> top) {//data: (x ,y)
-					//new action(name,data)=>new action(top.getname(), );
-					int x=top.getData().getX();
-					int y=top.getData().getY();
-					if(top.getName().startsWith("Crate"))// change to fit class CratePredicate<Position>
-					{
 						List<Action<Position>> possibleActions=getSatisfyingActions(top);
-						
-						Action<Position> actionToPerform=new Action<>("Move");//Move to ____
-						//pick an action that has preconditions who fit the most to the knowledge base
-						
-					}
-					
-					return null;
+						System.out.println(possibleActions.get(0));
+						int fitCount=0;
+						int maxFit=-1;
+						Action<Position> mostFitAction=null;
+						for (Action<Position> act : possibleActions) {
+							fitCount=0;
+							for (Predicate<Position> precondition : act.getPreconditions().getComponents()) {
+								fitCount = kb.satisfies(precondition)? fitCount+1:fitCount;
+							}
+							if(fitCount>maxFit)
+							{
+								maxFit=fitCount;
+								mostFitAction=act;
+							}
+						}				
+					return mostFitAction;
 				}
 				
 				@Override
@@ -59,7 +63,7 @@ public class PredicateGenerator  {// Convert level
 				
 				@Override
 				public Predicate<Position> getGoal() {
-					AndPredicate<Position> goal=new AndPredicate<>("Goal predicates",new ArrayList<Predicate<Position>>() );
+					AndPredicate<Position> goal=new AndPredicate<>("Goal_Predicates",new ArrayList<Predicate<Position>>() );
 					int goalCount=0;
 					int index=-1;
 					int goalIndex=0;
@@ -86,45 +90,78 @@ public class PredicateGenerator  {// Convert level
 					int y=top.getData().getY();
 					if(top.getName().startsWith("Crate"))// change to fit class CratePredicate<Position>
 					{
-						ArrayList<Action<Position>> possibleActions= new ArrayList<>();
-						Action<Position> act=new Action<Position>("Crate #?");
+						ArrayList<Action<Position>> possibleActions= new ArrayList<>();//this list will be returned
+						ArrayList<Predicate<Position>> toGenerate=new ArrayList<>();//all items in this list will be generated for each action
+						ArrayList<Predicate<Position>> toRemove=new ArrayList<>();//items in this list will be removed afer each generation of action
+						Action<Position> act=new Action<Position>("Move_Crate_To_Position");
 						act.setEffects(new AndPredicate<>(new SimplePredicate<>("Crate #?",new Position(x,y)),new NotPredicate<Position>(new SimplePredicate<Position>("Non Solid", new Position(x,y)))));//set effects to be "Crate at position "(x,y)", "No non solid at position (x,y)" (which means crate is in pos)
-						SimplePredicate<Position> nextSpaceIsFree=new SimplePredicate<Position>("Non Solid",new Position(x,y));//no wall or crate in next point
+						char objInNextPos=level.get(y)[x];
+						if(!(objInNextPos==' ' || objInNextPos=='o'))//if there's a solid at position, then add targetSpaceIsFree predicate
+						{
+							toGenerate.add(new NotPredicate<>(new SimplePredicate<Position>("Crate",new Position(x,y))));//add a predicate: no crate in next point
+							
+						}
 						SimplePredicate<Position> player1IsAtPosition=new SimplePredicate<Position>("Player1",null);//add player in position to push the crate
 						SimplePredicate<Position> CrateIsAtPosition=new SimplePredicate<Position>("Crate #?",null);//crate is at position to be pushed
 						
+						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
+						//{
 						CrateIsAtPosition.setData(new Position(x-1,y));
 						player1IsAtPosition.setData(new Position(x-2,y));
-						act.setPreconditions(new AndPredicate<Position>(CrateIsAtPosition,player1IsAtPosition,nextSpaceIsFree));//push crate to right
-						possibleActions.add(act);
 						
+						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
+						
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
+						possibleActions.add(act);
+						//}
+						
+						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
+						//{
 						CrateIsAtPosition.setData(new Position(x,y-1));
 						player1IsAtPosition.setData(new Position(x,y-2));
-						act.setPreconditions(new AndPredicate<Position>(CrateIsAtPosition,player1IsAtPosition,nextSpaceIsFree));//push crate to down
-						possibleActions.add(act);
 						
+						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
+						
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
+						possibleActions.add(act);
+						//}
+						
+						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)	
+						//{
 						CrateIsAtPosition.setData(new Position(x+1,y));
 						player1IsAtPosition.setData(new Position(x+2,y));
-						act.setPreconditions(new AndPredicate<Position>(CrateIsAtPosition,player1IsAtPosition,nextSpaceIsFree));//push crate to left
-						possibleActions.add(act);
 						
+						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
+						
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
+						possibleActions.add(act);
+						//}
+						
+						//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)		
+						//{
 						CrateIsAtPosition.setData(new Position(x,y+1));
 						player1IsAtPosition.setData(new Position(x,y+2));
-						act.setPreconditions(new AndPredicate<Position>(CrateIsAtPosition,player1IsAtPosition,nextSpaceIsFree));//push crate to up
+						
+						updateLists(toGenerate,toRemove,CrateIsAtPosition,player1IsAtPosition);
+						
+						act.setPreconditions(new AndPredicate<Position>(toGenerate));//push crate to up
 						possibleActions.add(act);
+						//}
 						
 						return possibleActions;
-//						generate a list of legal directions to move crate (policy)
-						
-						//(you have to check if there's a box or a wall in the direction [like policy checks])
-						//pick an action that has preconditions who fit the most to the knowledge base
 					}
-					//TODO: get position of "top" from top.getData
-					//   	search for the position in the level
-					//		return all legal actions (up down left right) it can take
-					//		optional: in strips, use strips.clone() to run all possible outcomes in
-					//		a seperate thread
-					//		
+					if(top.getName().startsWith("No Crate"))// if location needs to be free
+					{
+						//if there's already no crate in the location then generate a new action with no preconditions
+						
+						//else if there's a crate in the location, generate all the ways to remove it, AKA crate to the top, bottom, right, left of this position
+						
+					}
+					
+					//TODO: if there's already a player in the position, activate Searcher (from searchLib)
+					if(top.getName().startsWith("Player1")){
+						
+					}
 					return null;
 				}
 			};	
@@ -136,6 +173,17 @@ public class PredicateGenerator  {// Convert level
 		return null;
 	}
 
+	
+	@SafeVarargs
+	private static void updateLists(List<Predicate<Position>> toGenerate,List<Predicate<Position>> toRemove,Predicate<Position>...predicates )
+	{
+		toGenerate.removeAll(toRemove);
+		toRemove=new ArrayList<>();
+		for (Predicate<Position> predicate : predicates) {
+			toGenerate.add(predicate);
+			toRemove.add(predicate);
+		}
+	}
 	
 	static public AndPredicate<Position> getKB(ArrayList<char[]> level) {
 		
@@ -150,7 +198,7 @@ public class PredicateGenerator  {// Convert level
 					break;
 				case (' '):
 					kb.add(new SimplePredicate<Position>("BlankSpace", new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("Non Solid", new Position(i,j)));
+					kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
 					break;
 				case ('A'):
 					kb.add(new SimplePredicate<Position>("Player1", new Position(i,j)));
@@ -160,7 +208,7 @@ public class PredicateGenerator  {// Convert level
 					break;
 				case ('o'):
 					kb.add(new SimplePredicate<Position>("Goal #" + (goalCount++), new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("Non Solid", new Position(i,j)));
+					kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
 					break;
 				default:
 					break;

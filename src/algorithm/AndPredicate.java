@@ -14,6 +14,12 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 			this.add(predicate);
 		}
 	}
+	public AndPredicate(List<Predicate<T>> preds) {
+		super("Default AndPredicate",new ArrayList<Predicate<T>>());
+		for (Predicate<T> predicate : preds) {
+			this.add(predicate);
+		}
+	}
 	
 	private void splitAndPreds(AndPredicate<T> pred)
 	{

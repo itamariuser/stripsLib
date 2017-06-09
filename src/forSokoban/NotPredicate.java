@@ -15,5 +15,9 @@ public class NotPredicate<T> extends Predicate<T> {
 	public boolean satisfies(Predicate<T> other) {
 		return !(inner.satisfies(other));
 	}
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 
 }

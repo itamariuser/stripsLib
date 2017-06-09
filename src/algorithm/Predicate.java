@@ -46,6 +46,6 @@ public abstract class Predicate<T> {
 
 	@Override
 	public String toString() {
-		return "Name: "+this.name+"\nData: "+data.toString();
+		return "Type: "+this.getClass().getSimpleName()+"\nName: "+this.name+"\nData: "+data.toString();
 	}
 }

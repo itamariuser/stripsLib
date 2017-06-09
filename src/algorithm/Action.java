@@ -31,6 +31,8 @@ public class Action<T> extends Predicate<T> {
 	public Action(String name) {
 		super(name);
 	}
-	
-	
+	@Override
+	public String toString() {
+		return "Type: "+this.getClass().getSimpleName()+"\nName: "+this.name+"\nData: null";
+	}
 }
