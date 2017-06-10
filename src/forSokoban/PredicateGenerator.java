@@ -33,7 +33,8 @@ public class PredicateGenerator  {// Convert level
 			}
 			br.close();
 			AndPredicate<Position> kb=getKB(level);
-			Plannable<Position> plannable=new Plannable<Position>() {
+			Plannable<Position> plannable=new Plannable<Position>() {			
+				
 				@Override
 				public String toString() {
 					// TODO Auto-generated method stub
@@ -186,6 +187,30 @@ public class PredicateGenerator  {// Convert level
 					}
 					return null;
 				}
+
+				@Override
+				public boolean contradicts(Predicate<Position> pred1, Predicate<Position> pred2) {//TODO: WORK: decide which contradict which
+					if(pred1.getName().startsWith("Wall"))
+					{
+						if(pred1.getData().equals(pred2.getData()))
+						{
+							if(pred2.getName().startsWith("Player1")) return true;
+							if(pred2.getName().startsWith("Crate")) return true;
+							if(pred2.getName().startsWith("Goal")) return true;
+							if(pred2.getName().startsWith("Player1")) return true;
+						}
+						
+					}
+					return false;
+				}
+
+				@Override
+				public boolean satisfies(Predicate<Position> pred1, Predicate<Position> pred2) {//TODO: WORK: decide which contradict which
+					if()
+					
+					
+					return false;
+				}
 			};	
 			return plannable;
 		} catch (Exception e) {
@@ -210,7 +235,7 @@ public class PredicateGenerator  {// Convert level
 		}
 	}
 	
-	static public AndPredicate<Position> getKB(ArrayList<char[]> level) {
+	static public AndPredicate<Position> getKB(ArrayList<char[]> level) {//TODO: Remove some of the 
 		
 		AndPredicate<Position> kb = new AndPredicate<>("Knowledge base", null);
 		int crateCount = 0;
@@ -223,24 +248,24 @@ public class PredicateGenerator  {// Convert level
 					break;
 				case (' '):
 					kb.add(new SimplePredicate<Position>("BlankSpace", new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
-					kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
+					//kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
+					//kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
+					//kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
 					break;
 				case ('A'):
 					kb.add(new SimplePredicate<Position>("Player1", new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
-					kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
+					//kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
+					//kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
 					break;
 				case ('@'):
 					kb.add(new SimplePredicate<Position>("Crate #" + (crateCount++), new Position(i,j)));
-					kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
+					//kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
 					break;
 				case ('o'):
 					kb.add(new SimplePredicate<Position>("Goal #" + (goalCount++), new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
-					kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
-					kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
+					//kb.add(new SimplePredicate<Position>("Non_Solid", new Position(i,j)));
+					//kb.add(new SimplePredicate<Position>("No Crate", new Position(i,j)));
+					//kb.add(new NotPredicate<>( new SimplePredicate<Position>("Wall", new Position(i,j))));
 					break;
 				default:
 					break;

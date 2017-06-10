@@ -21,5 +21,10 @@ public class NotPredicate<T> extends Predicate<T> {
 	public String toString() {
 		return super.toString();
 	}
+	@Override
+	public boolean contradicts(Predicate<T> other) {
+		// TODO Auto-generated method stub
+		return super.contradicts(other);
+	}
 
 }

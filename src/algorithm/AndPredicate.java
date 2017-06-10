@@ -48,7 +48,7 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 	public boolean satisfies(Predicate<T> other) {
 		for(Predicate<T> pr:this.components)
 		{
-			if(pr.satisfies(other))
+			if(p.satisfies(pr, other))
 			{
 				return true;
 			}
@@ -72,5 +72,16 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public boolean contradicts(Predicate<T> other) {
+		for (Predicate<T> predicate : components) {
+			if(predicate.contradicts(other))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
