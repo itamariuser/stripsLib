@@ -17,7 +17,7 @@ public class Strips<T> implements Planner<T> {
 			{
 				//System.out.println(!plannable.getKnowledgebase().satisfies(top));
 				
-				if(!plannable.getKnowledgebase().satisfies(top))
+				if(!plannable.satisfies(plannable.getKnowledgebase(), top))
 				{
 					if(top instanceof AndPredicate)//if complex then unpack components to stack
 					{

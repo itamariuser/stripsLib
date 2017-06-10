@@ -4,7 +4,7 @@ public abstract class Predicate<T> {
 	
 	T data;
 	protected String name;
-	Plannable<T> p;
+	Plannable<T> plannable;
 
 	public String getName() {
 		return name;
@@ -20,15 +20,6 @@ public abstract class Predicate<T> {
 
 	public void setData(T data) {
 		this.data = data;
-	}
-
-	public boolean satisfies(Predicate<T> other) {// (A => B)
-		return p.satisfies(this, other);
-	}
-
-	public boolean contradicts(Predicate<T> other)// (A => ~B)
-	{
-		return p.contradicts(this, other);
 	}
 
 	public Predicate(String name) {

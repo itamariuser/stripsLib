@@ -29,7 +29,7 @@ public class ComplexPredicate<T> extends Predicate<T> {
 	}
 
 	public void update(AndPredicate<T> effects) {
-		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->p.contradicts(pr)));
+		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->plannable.contradicts(p,pr)));
 		components.addAll(effects.getComponents());
 		
 	}

@@ -51,7 +51,7 @@ public class PredicateGenerator  {// Convert level
 						for (Action<Position> act : possibleActions) {
 							fitCount=0;
 							for (Predicate<Position> precondition : act.getPreconditions().getComponents()) {
-								fitCount = kb.satisfies(precondition)? fitCount+1 : fitCount;
+								fitCount = this.satisfies(kb,precondition)? fitCount+1 : fitCount;
 							}
 							if(fitCount>maxFit)
 							{
@@ -101,16 +101,16 @@ public class PredicateGenerator  {// Convert level
 						ArrayList<Predicate<Position>> toRemove=new ArrayList<>();//items in this list will be removed afer each generation of action
 						Action<Position> act=new Action<Position>("Move_Crate_To_Position");
 						act.setEffects(new AndPredicate<>(new SimplePredicate<>("Crate #?",new Position(x,y)),new NotPredicate<Position>(new SimplePredicate<Position>("Non Solid", new Position(x,y)))));//set effects to be "Crate at position "(x,y)", "No non solid at position (x,y)" (which means crate is in pos)
-						if(kb.satisfies(new SimplePredicate<>("Crate #?",new Position(x,y))))//if there's a solid at position, then add targetSpaceIsFree predicate
+						if(this.satisfies(kb,new SimplePredicate<>("Crate #?",new Position(x,y))))//if there's a solid at position, then add targetSpaceIsFree predicate
 						{
 							toGenerate.add(new NotPredicate<>(new SimplePredicate<Position>("Crate",new Position(x,y))));//add a predicate: no crate in next point
 						}
 						SimplePredicate<Position> player1IsAtPosition=new SimplePredicate<Position>("Player1",null);//add player in position to push the crate
 						SimplePredicate<Position> CrateIsAtPosition=new SimplePredicate<Position>("Crate #?",null);//crate is at position to be pushed
-						if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y)))))
+						if(this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y)))))
 						{
 							//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
-							if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x-2,y)))) && kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x-1,y)))) )
+							if(this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x-2,y)))) && this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x-1,y)))) )
 							{
 								CrateIsAtPosition.setData(new Position(x-1,y));//TODO: add position checking
 								player1IsAtPosition.setData(new Position(x-2,y));
@@ -120,7 +120,7 @@ public class PredicateGenerator  {// Convert level
 							}
 							
 							//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
-							if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y-2)))) && kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y-1)))) )
+							if(this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y-2)))) && this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y-1)))) )
 							{
 								CrateIsAtPosition.setData(new Position(x,y-1));
 								player1IsAtPosition.setData(new Position(x,y-2));
@@ -131,7 +131,7 @@ public class PredicateGenerator  {// Convert level
 							}
 							
 							//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)
-							if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x+2,y)))) && kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x+1,y)))) )
+							if(this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x+2,y)))) && this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x+1,y)))) )
 							{
 								CrateIsAtPosition.setData(new Position(x+1,y));
 								player1IsAtPosition.setData(new Position(x+2,y));
@@ -142,7 +142,7 @@ public class PredicateGenerator  {// Convert level
 							}
 							
 							//TODO: if no wall at next position, then add (still need to check if there's a crate in next pos)		
-							if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y+2)))) && kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y+1)))) )
+							if(this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y+2)))) && this.satisfies(kb,new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y+1)))) )
 							{
 								CrateIsAtPosition.setData(new Position(x,y+1));
 								player1IsAtPosition.setData(new Position(x,y+2));
@@ -180,7 +180,7 @@ public class PredicateGenerator  {// Convert level
 					//TODO: if there's already a player in the position, activate Searcher (from searchLib)
 					if(top.getName().startsWith("Player1")){
 						
-						if(kb.satisfies(new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y)))))
+						if(this.satisfies(kb, new NotPredicate<>(new SimplePredicate<Position>("Wall", new Position(x,y)))))
 						{
 							//Use searcher
 						}
@@ -190,23 +190,27 @@ public class PredicateGenerator  {// Convert level
 
 				@Override
 				public boolean contradicts(Predicate<Position> pred1, Predicate<Position> pred2) {//TODO: WORK: decide which contradict which
-					if(pred1.getName().startsWith("Wall"))
+					if(pred1.getData().equals(pred2.getData()))
 					{
-						if(pred1.getData().equals(pred2.getData()))
+						if(pred1.getName().startsWith("Wall"))
 						{
-							if(pred2.getName().startsWith("Player1")) return true;
-							if(pred2.getName().startsWith("Crate")) return true;
-							if(pred2.getName().startsWith("Goal")) return true;
-							if(pred2.getName().startsWith("Player1")) return true;
+								if(pred2.getName().startsWith("Player1")) return true;
+								if(pred2.getName().startsWith("Crate")) return true;
+								if(pred2.getName().startsWith("Goal")) return true;
+								
 						}
 						
+						if(pred1.getName().startsWith("Crate"))
+						{
+							if(pred2.getName().startsWith("Player1")) return true;
+							if(pred2.getName().startsWith("Wall")) return true;
+						}
 					}
 					return false;
 				}
 
 				@Override
 				public boolean satisfies(Predicate<Position> pred1, Predicate<Position> pred2) {//TODO: WORK: decide which contradict which
-					if()
 					
 					
 					return false;

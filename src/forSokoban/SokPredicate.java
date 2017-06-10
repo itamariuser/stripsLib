@@ -8,11 +8,4 @@ public class SokPredicate<T> extends Predicate<T>{//SokPredicate extends Predica
 		super(name);
 	}
 
-
-	
-	
-	@Override
-	public boolean contradicts(Predicate<T> other) { //TODO: Change to fit sokoban
-		return (super.contradicts(other) || false); 
-	}
 }

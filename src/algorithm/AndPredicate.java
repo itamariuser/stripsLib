@@ -44,44 +44,9 @@ public class AndPredicate<T> extends ComplexPredicate<T> {
 		return "** 'And' PREDICATE, Name: "+this.name+", preds:"+sb.toString();
 	}
 	
-	@Override
-	public boolean satisfies(Predicate<T> other) {
-		for(Predicate<T> pr:this.components)
-		{
-			if(p.satisfies(pr, other))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	public void update(AndPredicate<T> effects) {
-		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->p.contradicts(pr)));
+		effects.getComponents().forEach((Predicate<T> p)->components.removeIf((Predicate<T> pr)->plannable.contradicts(p,pr)));
 		components.addAll(effects.getComponents());
 		splitAndPreds(effects);
-	}
-
-	
-	public boolean satisfies(AndPredicate<T> complex)
-	{
-		for (Predicate<T> predicate : complex.getComponents()) {
-			if(!satisfies(predicate))
-			{
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	public boolean contradicts(Predicate<T> other) {
-		for (Predicate<T> predicate : components) {
-			if(predicate.contradicts(other))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 }
