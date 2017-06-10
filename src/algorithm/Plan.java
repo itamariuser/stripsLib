@@ -27,7 +27,15 @@ public class Plan<T> {
 		super();
 		this.actions = actions;
 	}
-	
+	@Override
+	public String toString() {
+		StringBuilder sb=new StringBuilder();
+		int i=0;
+		for (Action<T> action : actions) {
+			sb.append("\nAction: "+(++i)+action.toString());
+		}
+		return sb.toString();
+	}
 	
 	
 }

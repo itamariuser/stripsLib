@@ -31,6 +31,7 @@ public class Strips<T> implements Planner<T> {
 					{
 						stack.pop();
 						Action<T> action=plannable.getSatisfyingAction(top);//Change to a set of actions
+						//TODO: 
 						stack.push(action);
 						stack.push(action.getPreconditions());
 					}
